@@ -1,4 +1,4 @@
-import omoideArtifact from "../build/contracts/OmoideStorage.json";
+import omoideArtifact from "./truffle/build/contracts/OmoideStorage.json";
 import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
