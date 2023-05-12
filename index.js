@@ -8,9 +8,12 @@ let contract;
 
 async function initialize() {
     const provider = new WalletConnectProvider({
-        infuraId: "YOUR_INFURA_PROJECT_ID", // Replace with your Infura project ID
+        rpc: {
+            80001: 'https://rpc-mumbai.maticvigil.com/', // For Mumbai Testnet, use this RPC
+        },
+        chainId: 80001, // This is the chainId for Mumbai Testnet
     });
-
+    
     await provider.enable();
 
     web3 = new Web3(provider);

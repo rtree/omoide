@@ -99158,7 +99158,11 @@ function _initialize() {
       while (1) switch (_context.prev = _context.next) {
         case 0:
           provider = new _web3Provider.default({
-            infuraId: "YOUR_INFURA_PROJECT_ID" // Replace with your Infura project ID
+            rpc: {
+              80001: 'https://rpc-mumbai.maticvigil.com/' // For Mumbai Testnet, use this RPC
+            },
+
+            chainId: 80001 // This is the chainId for Mumbai Testnet
           });
           _context.next = 3;
           return provider.enable();
