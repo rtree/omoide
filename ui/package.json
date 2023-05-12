@@ -10,6 +10,7 @@
     "@web3modal/react": "^2.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-native-web": "^0.19.4",
     "react-scripts": "5.0.1",
     "viem": "^0.3.22",
     "wagmi": "^1.0.2",
@@ -38,5 +39,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-native": "^0.71.8"
   }
 }
