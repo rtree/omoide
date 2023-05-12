@@ -1,3 +1,4 @@
+// index.js
 import omoideArtifact from "./truffle/build/contracts/OmoideStorage.json";
 import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -9,19 +10,20 @@ let contract;
 async function initialize() {
     const provider = new WalletConnectProvider({
         rpc: {
-            80001: 'https://rpc-mumbai.maticvigil.com/', // For Mumbai Testnet, use this RPC
+            80001: 'https://rpc-mumbai.maticvigil.com/',
         },
-        chainId: 80001, // This is the chainId for Mumbai Testnet
+        chainId: 80001,
     });
-    
+
     await provider.enable();
 
     web3 = new Web3(provider);
 
-    account = (await web3.eth.getAccounts())[0];
-      
+    const accounts = await web3.eth.getAccounts();
+    account = accounts[0];
+
     const contractAbi = omoideArtifact.abi;
-    const contractAddress = omoideArtifact.networks[1337].address;
+    const contractAddress = omoideArtifact.networks[80001].address;
 
     contract = new web3.eth.Contract(contractAbi, contractAddress);
 
@@ -43,4 +45,4 @@ async function storeData(event) {
     console.log(result);
 }
 
-window.onload = initialize;
+window.addEventListener('load', initialize);
