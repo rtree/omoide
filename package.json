@@ -1,6 +1,11 @@
 {
   "dependencies": {
+    "@wagmi/core": "^1.0.2",
     "@walletconnect/web3-provider": "^1.8.0",
+    "@web3modal/ethereum": "^2.4.1",
+    "@web3modal/html": "^2.4.1",
+    "typescript": "^5.0.4",
+    "viem": "^0.3.22",
     "web3": "^1.10.0"
   }
 }
