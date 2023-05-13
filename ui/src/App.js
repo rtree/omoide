@@ -7,7 +7,7 @@ import React, { useCallback,useState,useEffect } from 'react';
 //import omoideArtifact from './OmoideStorage.json';
 import omoideArtifact from './OmoideStorage.json';
 import WebFont from 'webfontloader';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress } from '@mui/material';
 
 /*
 function WriteComponent() {
@@ -34,25 +34,56 @@ function Message() {
     functionName: "storeData",
     onSuccess(data){
       console.log(data);
+      setOpenDialog(true);
+
     }
   })
+  const [openDialog, setOpenDialog] = useState(false);
   const [message, setMessage] = useState(`Dear,
 
   I am now typing in a garden of Lisboa. You are watching this because of my absence, right?
   - - -
   
   Thanks,`);
+  const onCloseDialog = ()=>{
+    setOpenDialog(false); // Close the dialog
+  }
   const onClick = ()=>{
     write({
       args: ["testid",message]
     }
     );
   };
+  const writeNFC = useCallback(async () => {
+    // replace all console.log calls with addLog
+    if ('NDEFReader' in window) {
+      const ndef = new NDEFReader();
+      try {
+        await ndef.write({ records: [{ recordType: "text", data: "Hello NFC" }] });
+        //addLog("> Write completed");
+      } catch (error) {
+        //addLog(`Error: ${error}`);
+      }
+    } else {
+      //addLog("> NDEFReader is not supported in this browser");
+    }
+  }, [onCloseDialog]);
 
   return (
     <div style={{ textAlign: 'center' }}>
       <InputField type="text" multiline={true} defaultValue={message} onChange={(e) => setMessage(e.target.value)} /> {/* Set defaultValue prop */}
-      <Button onClick={onClick}>Save this forever onchain.</Button>
+      <Button variant="contained" sx={{ borderRadius: 2}} onClick={onClick}>Save this forever onchain.</Button>
+
+      <Dialog open={openDialog} onClose={onCloseDialog}>
+        <DialogTitle>Save keys for lovers</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Please touch NFC tag.</DialogContentText>
+          <CircularProgress></CircularProgress>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onCloseDialog}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
@@ -106,6 +137,7 @@ function Log({ logs }) {
     </div>
   );
 }
+/*
 function Button({ onClick, children }) {
 
   const style = {
@@ -125,7 +157,7 @@ function Button({ onClick, children }) {
     </button>
   );
 }
-
+*/
 function InputField({ label, multiline, ...rest }) {
   const style = {
     display: 'flex',
