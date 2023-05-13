@@ -128,7 +128,19 @@ function Message() {
       const ndef = new NDEFReader();
       console.log("write object created");
       try {
-        await ndef.write({ records: [{ recordType: "text", data: key }] });
+        const currentURL = window.location.href;
+        const records = [
+          {
+            recordType: "url",
+            data: `${currentURL}receiver/${uuid}`,
+          },
+          {
+            recordType: "text",
+            data: key,
+          },
+        ];
+        console.log(records);
+        await ndef.write({ records: records });
         console.log("write completed");
         scanNFC();
         onCloseDialog();
@@ -170,7 +182,7 @@ function Message() {
       <Button variant="contained" sx={{ borderRadius: 2}} onClick={onClick}>Save this forever onchain.</Button>
 
       <Dialog open={openDialog} onClose={onCloseDialog}>
-        <DialogTitle>Save keys for lovers</DialogTitle>
+        <DialogTitle>About to save</DialogTitle>
         <DialogContent>
           <DialogContentText>Please touch NFC tag.</DialogContentText>
           <CircularProgress></CircularProgress>
@@ -181,7 +193,7 @@ function Message() {
       </Dialog>
 
       <Dialog open={openDialog2} onClose={onCloseDialog2}>
-        <DialogTitle>Save keys for lovers</DialogTitle>
+        <DialogTitle>Done!</DialogTitle>
         <DialogContent>
           <DialogContentText>Your message has been stored.</DialogContentText>
         </DialogContent>
