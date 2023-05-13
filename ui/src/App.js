@@ -3,16 +3,17 @@ import { Web3Modal } from '@web3modal/react'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import { goerli, polygonMumbai, scrollTestnet, optimism } from 'wagmi/chains'
 import { Web3Button } from '@web3modal/react'
-import { useAccount, useContract } from 'wagmi'
-
 import './App.css';
+import { useAccount } from 'wagmi'
 
-function HomePage() {
-  return <Web3Button />
-}
+import omoideArtifact from './OmoideStorage.json';
+import Web3 from 'web3';
+/* import { useAccount, useContract } from 'wagmi' */
+
+
 function App() {
-  const chains = [goerli, polygonMumbai, scrollTestnet, optimism]
-  const projectId = '5b90bbc69d8aceaccdf7dab68ee6ae91'
+  const chains           = [goerli, polygonMumbai, scrollTestnet, optimism]
+  const projectId        = '5b90bbc69d8aceaccdf7dab68ee6ae91'
   const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
   const wagmiConfig = createConfig({
     autoConnect: true,
@@ -20,11 +21,13 @@ function App() {
     publicClient
   })
   const ethereumClient = new EthereumClient(wagmiConfig, chains)
+  const { account } = useAccount();
 
   return (
     <>
       <WagmiConfig config={wagmiConfig}>
-        <HomePage />
+        {/* <SenderPage /> */}
+        <Web3Button /> {/* Add the Web3Button here */}
       </WagmiConfig>
 
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
