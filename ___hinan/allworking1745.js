@@ -8,18 +8,6 @@ import React, { useCallback,useState,useEffect } from 'react';
 import omoideArtifact from './OmoideStorage.json';
 import WebFont from 'webfontloader';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress } from '@mui/material';
-import { AES  } from 'crypto-js';
-import CryptoJS from 'crypto-js';
-
-let key;
-let uuid;
-
-function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
 
 function WriteComponent() {
   const chainId                  = useChainId()
@@ -39,7 +27,7 @@ function WriteComponent() {
 }
 
 function Message() {
-  key = "CVBNKFTYUHUHUIHUILHKULHULHUIbjkyukghyukVUKVYUKGBYHUIHIUl";
+  const key = "CVBNKFTYUHUHUIHUILHKULHULHUIbjkyukghyukVUKVYUKGBYHUIHIUl";
   const chainId                  = useChainId()
   const { data, isLoading, write } = useContractWrite({
     address: omoideArtifact.networks[chainId].address,
@@ -48,11 +36,10 @@ function Message() {
     onSuccess(data){
       console.log(data);
       setOpenDialog(true);
-      writeNFC();
+
     }
   })
-  const [openDialog , setOpenDialog] = useState(false);
-  const [openDialog2, setOpenDialog2] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const [message, setMessage] = useState(`Dear,
 
   I am now typing in a garden of Lisboa. You are watching this because of my absence, right?
@@ -64,103 +51,25 @@ function Message() {
   const onCloseDialog = ()=>{
     setOpenDialog(false); // Close the dialog
   }
-  const onCloseDialog2 = ()=>{
-    setOpenDialog2(false); // Close the dialog
-  }
-  const encryptMessage = (message, key) => {
-    const encrypted = AES.encrypt(message, key).toString();
-    return encrypted;
-  };
-  const decryptMessage = async (encrypted, key) => {
-    console.log("decrykey:"+key);
-    const decrypted = AES.decrypt(encrypted, key).toString(CryptoJS.enc.Utf8);
-    return decrypted;
-  };
-
-  const onClick = async () => {
-    const generatePrivateKey = async () => {
-      const keyPair = await crypto.subtle.generateKey(
-        {
-          name: 'ECDSA',
-          namedCurve: 'P-256'
-        },
-        true,
-        ['sign', 'verify']
-      );
-  
-      const privateKey = await crypto.subtle.exportKey('jwk', keyPair.privateKey);
-      return privateKey.d;
-    };
-
-    try {
-      const privateKey = await generatePrivateKey();
-      console.log(privateKey);
-      key = privateKey;
-      uuid = generateUUID();
-      console.log("pri :", key);
-      console.log("uuid:", uuid);
-      const encryptedMessage = encryptMessage(message, key);
-      write({
-        args: [uuid, encryptedMessage]
-      });
-
-
-
-      decryptMessage(encryptedMessage, key)
-      .then(decryptedMessage => {
-        console.log('Decrypted message:', decryptedMessage);
-        // Use the decrypted message as needed
-      })
-      .catch(error => {
-        console.error('Decryption error:', error);
-      });
-
-
-    } catch (error) {
-      console.error(error);
+  const onClick = ()=>{
+    write({
+      args: ["testid",message]
     }
+    );
   };
-
   const writeNFC = useCallback(async () => {
     // replace all console.log calls with addLog
     if ('NDEFReader' in window) {
-      console.log("write initiated");
       const ndef = new NDEFReader();
-      console.log("write object created");
       try {
         await ndef.write({ records: [{ recordType: "text", data: key }] });
-        console.log("write completed");
-        scanNFC();
+        console.log("NFC write completed");
         onCloseDialog();
-        setOpenDialog2(true);
       } catch (error) {
         //addLog(`Error: ${error}`);
       }
     } else {
       //addLog("> NDEFReader is not supported in this browser");
-    }
-  }, [onCloseDialog]);
-
-  const scanNFC = useCallback(async () => {
-    // replace all console.log calls with addLog
-    if ('NDEFReader' in window) {
-      const ndef = new NDEFReader();
-      try {
-        await ndef.scan();
-        console.log("> Scan started");
-        ndef.onreading = ({ message, serialNumber }) => {
-          console.log(`> Serial number: ${serialNumber}`);
-          for (const record of message.records) {
-            console.log(`> Record type:  ${record.recordType}`);
-            console.log(`> Record id:    ${record.id}`);
-            console.log(`> Record data:  ${record.data}`);
-          }
-        };
-      } catch (error) {
-        console.log(`Error: ${error}`);
-      }
-    } else {
-      console.log("> NDEFReader is not supported in this browser");
     }
   }, [onCloseDialog]);
 
@@ -179,14 +88,6 @@ function Message() {
           <Button onClick={onCloseDialog}>Close</Button>
         </DialogActions>
       </Dialog>
-
-      <Dialog open={openDialog2} onClose={onCloseDialog2}>
-        <DialogTitle>Save keys for lovers</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Your message has been stored.</DialogContentText>
-        </DialogContent>
-      </Dialog>
-
     </div>
   );
 }
@@ -328,8 +229,8 @@ function NFCComponent() {
   }, [addLog]);
 
   const writeNFC = useCallback(async () => {
+    // replace all console.log calls with addLog
     if ('NDEFReader' in window) {
-      addLog('write initiated');
       const ndef = new NDEFReader();
       try {
         await ndef.write({ records: [{ recordType: "text", data: "Hello NFC" }] });
