@@ -20,12 +20,14 @@ function WriteComponent() {
   })
 
   return (
-    <button onClick={() => write()}>write data</button>
+    <div>
+      <Button onClick={() => write()}>WRITE TO CHAIN</Button>
+    </div>
   )
 }
 
 function Message() {
-  const key = "key:CVBNKFTYUHUHUIHUILHKULHULHUIbjkyukghyukVUKVYUKGBYHUIHIUl";
+  const key = "CVBNKFTYUHUHUIHUILHKULHULHUIbjkyukghyukVUKVYUKGBYHUIHIUl";
   const chainId                  = useChainId()
   const { data, isLoading, write } = useContractWrite({
     address: omoideArtifact.networks[chainId].address,
@@ -41,8 +43,10 @@ function Message() {
   const [message, setMessage] = useState(`Dear,
 
   I am now typing in a garden of Lisboa. You are watching this because of my absence, right?
-  - - -
-  
+
+  As freely as God has given me life, I have joined my life with yours - - - 
+   - - -
+
   Thanks,`);
   const onCloseDialog = ()=>{
     setOpenDialog(false); // Close the dialog
@@ -59,7 +63,8 @@ function Message() {
       const ndef = new NDEFReader();
       try {
         await ndef.write({ records: [{ recordType: "text", data: key }] });
-        //addLog("> Write completed");
+        console.log("NFC write completed");
+        onCloseDialog();
       } catch (error) {
         //addLog(`Error: ${error}`);
       }
@@ -118,17 +123,17 @@ function App() {
 
   return (
     <div>
-      <WriteComponent></WriteComponent>
       <Web3Button  />
       <Message />
       <NFCComponent> </NFCComponent>
+      <WriteComponent></WriteComponent>
     </div>
   );
 }
 
 function Log({ logs }) {
   return (
-    <div style={{ marginTop: '20px', border: '1px solid #000', padding: '10px', fontSize: '10pt',height: '100px', overflow: 'auto'}}>
+    <div style={{ marginTop: '10px', border: '1px solid #000', padding: '10px', fontSize: '10pt',height: '100px', overflow: 'auto'}}>
       <ul>
         {logs.map((log, index) => (
           <li key={index}>{log}</li>
@@ -163,7 +168,7 @@ function InputField({ label, multiline, ...rest }) {
     display: 'flex',
     flexDirection: 'column',
     margin: '10px',
-    height: '300px'
+    height: '400px'
   };
 
   const labelStyle = {
@@ -240,7 +245,7 @@ function NFCComponent() {
 
   return (
     <div style={{ textAlign: 'left', marginTop: '200px', border: '1px solid #000', padding: '10px' }}>
-      <div>NFC</div>
+      <div>NFC and DEBUG</div>
       <Button onClick={scanNFC}>Start NFC Scan</Button>
       <Button onClick={writeNFC}>Write to NFC</Button>
       <Log logs={logs} />
