@@ -93,7 +93,7 @@ function InputField({ label, multiline, ...rest }) {
   };
 
   const textareaStyle = {
-    fontSize: '20pt',
+    fontSize: '24pt',
     height: '100%',
     backgroundColor: 'black', // Black background
     color: '#00FF00', // Green text
@@ -115,10 +115,17 @@ function InputField({ label, multiline, ...rest }) {
 }
 
 function Layout() {
+  const defaultText = `Dear,
+
+  I am now typing in a garden of Lisboa. You are watching this because of my absence, right?
+  - - -
+  
+  Thanks,`;
+
   return (
     <div style={{ textAlign: 'center' }}>
-      <InputField type="text" multiline />
-      <Button>Save</Button>
+      <InputField type="text" multiline={true} defaultValue={defaultText} /> {/* Set defaultValue prop */}
+      <Button>Save this forever onchain.</Button>
     </div>
   );
 }
