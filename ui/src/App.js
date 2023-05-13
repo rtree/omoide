@@ -29,6 +29,7 @@ function App() {
         <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
         <Layout>
         </Layout>
+        <NFCComponent>  </NFCComponent>
       </WagmiConfig>
     </>
   );
@@ -73,9 +74,25 @@ function NFCComponent() {
     }
   }, []);
 
+  const writeNFC = useCallback(async () => {
+    if ('NDEFReader' in window) {
+      const ndef = new NDEFReader();
+      try {
+        await ndef.write({ records: [{ recordType: "text", data: "Hello NFC" }] });
+        console.log("> Write completed");
+      } catch (error) {
+        console.log(`Error: ${error}`);
+      }
+    } else {
+      console.log("> NDEFReader is not supported in this browser");
+    }
+  }, []);
+  
+
   return (
     <div>
       <button onClick={scanNFC}>Start NFC Scan</button>
+      <button onClick={writeNFC}>Write to NFC</button>
     </div>
   );
 }
