@@ -7,7 +7,7 @@ import { Web3Button } from '@web3modal/react'
 import './App.css';
 import { useAccount } from 'wagmi'
 import Web3 from "web3";
-import React, { useCallback } from 'react';
+import React, { useCallback,useState } from 'react';
 import omoideArtifact from './OmoideStorage.json';
 
 function App() {
@@ -52,47 +52,60 @@ function Layout(){
 }
 
 function NFCComponent() {
+  const [logs, setLogs] = useState([]);
+
+  const addLog = useCallback((message) => {
+    setLogs((prevLogs) => [...prevLogs, message]);
+  }, []);
+
   const scanNFC = useCallback(async () => {
+    // replace all console.log calls with addLog
     if ('NDEFReader' in window) {
       const ndef = new NDEFReader();
       try {
         await ndef.scan();
-        console.log("> Scan started");
+        addLog("> Scan started");
         ndef.onreading = ({ message, serialNumber }) => {
-          console.log(`> Serial number: ${serialNumber}`);
+          addLog(`> Serial number: ${serialNumber}`);
           for (const record of message.records) {
-            console.log(`> Record type:  ${record.recordType}`);
-            console.log(`> Record id:    ${record.id}`);
-            console.log(`> Record data:  ${record.data}`);
+            addLog(`> Record type:  ${record.recordType}`);
+            addLog(`> Record id:    ${record.id}`);
+            addLog(`> Record data:  ${record.data}`);
           }
         };
       } catch (error) {
-        console.log(`Error: ${error}`);
+        addLog(`Error: ${error}`);
       }
     } else {
-      console.log("> NDEFReader is not supported in this browser");
+      addLog("> NDEFReader is not supported in this browser");
     }
-  }, []);
+  }, [addLog]);
 
   const writeNFC = useCallback(async () => {
+    // replace all console.log calls with addLog
     if ('NDEFReader' in window) {
       const ndef = new NDEFReader();
       try {
         await ndef.write({ records: [{ recordType: "text", data: "Hello NFC" }] });
-        console.log("> Write completed");
+        addLog("> Write completed");
       } catch (error) {
-        console.log(`Error: ${error}`);
+        addLog(`Error: ${error}`);
       }
     } else {
-      console.log("> NDEFReader is not supported in this browser");
+      addLog("> NDEFReader is not supported in this browser");
     }
-  }, []);
-  
+  }, [addLog]);
 
   return (
     <div>
       <button onClick={scanNFC}>Start NFC Scan</button>
       <button onClick={writeNFC}>Write to NFC</button>
+      <h2>Logs:</h2>
+      <ul>
+        {logs.map((log, index) => (
+          <li key={index}>{log}</li>
+        ))}
+      </ul>
     </div>
   );
 }
