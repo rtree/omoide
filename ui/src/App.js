@@ -7,8 +7,9 @@ import { Web3Button } from '@web3modal/react'
 import './App.css';
 import { useAccount } from 'wagmi'
 import Web3 from "web3";
-import React, { useCallback,useState } from 'react';
+import React, { useCallback,useState,useEffect } from 'react';
 import omoideArtifact from './OmoideStorage.json';
+import WebFont from 'webfontloader';
 
 function App() {
   const chains           = [goerli, polygonMumbai, scrollTestnet, optimism]
@@ -21,6 +22,18 @@ function App() {
   })
   const ethereumClient = new EthereumClient(wagmiConfig, chains)
   const { account } = useAccount();
+
+  useEffect(() => {
+    document.body.style.backgroundColor = '#1C1C1C';
+    document.body.style.fontSize = '18pt';
+    document.body.style.color = '#5D6D74';
+    WebFont.load({
+      google: {
+        families: ['VT323'] // Load 'VT323' font from Google Fonts
+      }
+    });
+    
+  }, []);
 
   return (
     <>
@@ -35,18 +48,77 @@ function App() {
   );
 }
 
-function Layout(){
-  return(
-    <div>
-      <div>
-        <button>Execute</button>
-      </div>
-      <div>
-        Message<input type="text"></input>
-      </div>
-      <div>
-        facePic<input type="text"></input>
-      </div>
+function Log({ logs }) {
+  return (
+    <div style={{ marginTop: '20px', border: '1px solid #000', padding: '10px' }}>
+      <h3>Logs:</h3>
+      <ul>
+        {logs.map((log, index) => (
+          <li key={index}>{log}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+function Button({ onClick, children }) {
+  const style = {
+    padding: '10px 20px',
+    margin: '10px',
+    fontSize: '14px',
+    cursor: 'pointer',
+    borderRadius: '30px',
+    backgroundColor: '#E8673C',
+    color: 'white',
+    border: 'none'
+  };
+
+  return (
+    <button style={style} onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+function InputField({ label, multiline, ...rest }) {
+  const style = {
+    display: 'flex',
+    flexDirection: 'column',
+    margin: '10px',
+    height: '300px'
+  };
+
+  const labelStyle = {
+    marginBottom: '5px',
+    color: 'white'
+  };
+
+  const textareaStyle = {
+    fontSize: '20pt',
+    height: '100%',
+    backgroundColor: 'black', // Black background
+    color: '#00FF00', // Green text
+    fontFamily: 'VT323',
+    border: 'none' // Remove border
+  };
+
+
+  return (
+    <div style={style}>
+      <label style={labelStyle}>{label}</label>
+      {multiline ? (
+        <textarea style={textareaStyle} {...rest} />
+      ) : (
+        <input {...rest} />
+      )}
+    </div>
+  );
+}
+
+function Layout() {
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <InputField type="text" multiline />
+      <Button>Save</Button>
     </div>
   );
 }
@@ -97,15 +169,11 @@ function NFCComponent() {
   }, [addLog]);
 
   return (
-    <div>
-      <button onClick={scanNFC}>Start NFC Scan</button>
-      <button onClick={writeNFC}>Write to NFC</button>
-      <h2>Logs:</h2>
-      <ul>
-        {logs.map((log, index) => (
-          <li key={index}>{log}</li>
-        ))}
-      </ul>
+    <div style={{ textAlign: 'left', fontSize: '14pt' }}>
+      <div>NFC Reader</div>
+      <Button onClick={scanNFC}>Start NFC Scan</Button>
+      <Button onClick={writeNFC}>Write to NFC</Button>
+      <Log logs={logs} />
     </div>
   );
 }
