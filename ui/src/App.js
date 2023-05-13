@@ -1,27 +1,42 @@
 /* global NDEFReader */
-import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
-import { Web3Modal } from '@web3modal/react'
-import { configureChains, createConfig, WagmiConfig } from 'wagmi'
-import { goerli, polygonMumbai, scrollTestnet, optimism } from 'wagmi/chains'
+
 import { Web3Button } from '@web3modal/react'
 import './App.css';
-import { useAccount } from 'wagmi'
-import Web3 from "web3";
+import { useAccount, useChainId, useConnect, useContractRead, useContractWrite } from 'wagmi'
 import React, { useCallback,useState,useEffect } from 'react';
+//import omoideArtifact from './OmoideStorage.json';
 import omoideArtifact from './OmoideStorage.json';
 import WebFont from 'webfontloader';
 
-function App() {
-  const chains           = [goerli, polygonMumbai, scrollTestnet, optimism]
-  const projectId        = '5b90bbc69d8aceaccdf7dab68ee6ae91'
-  const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
-  const wagmiConfig = createConfig({
-    autoConnect: true,
-    connectors: w3mConnectors({ projectId, version: 1, chains }),
-    publicClient
+function WriteComponent() {
+  const { data, isLoading, write } = useContractWrite({
+    address: omoideArtifact.networks[5].address,
+    abi: omoideArtifact.abi,
+    functionName: "storeData",
+    args: ["test","test"]
   })
-  const ethereumClient = new EthereumClient(wagmiConfig, chains)
-  const { account } = useAccount();
+
+  return (
+    <button onClick={() => write()}>write data</button>
+  )
+}
+
+function App() {
+  const { connect, }             = useConnect();
+  const { address, isConnected } = useAccount();
+  const chainId                  = useChainId()
+
+  const { data } = useContractRead({
+    address: omoideArtifact.networks[5].address,
+    abi: omoideArtifact.abi,
+    functionName: "getData",
+    args: ["test"]
+  })
+
+  console.log("here", address )
+  console.log("chainId", chainId )
+  console.log("isConnected", isConnected )
+  console.log("data", data )
 
   useEffect(() => {
     document.body.style.backgroundColor = '#1C1C1C';
@@ -36,15 +51,13 @@ function App() {
   }, []);
 
   return (
-    <>
-      <WagmiConfig config={wagmiConfig}>
-        <Web3Button />
-        <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
-        <Layout>
-        </Layout>
-        <NFCComponent>  </NFCComponent>
-      </WagmiConfig>
-    </>
+    <div>
+      <WriteComponent/>
+      <Web3Button  />
+      <Layout>
+      </Layout>
+      <NFCComponent> </NFCComponent>
+    </div>
   );
 }
 
@@ -186,40 +199,3 @@ function NFCComponent() {
 }
 
 export default App;
-
-/*
-import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
-import { Web3Modal } from '@web3modal/react'
-import { configureChains, createConfig, WagmiConfig } from 'wagmi'
-import { goerli, polygonMumbai, scrollTestnet, optimism } from 'wagmi/chains'
-import { Web3Button } from '@web3modal/react'
-import './App.css';
-import { useAccount } from 'wagmi'
-
-import omoideArtifact from './OmoideStorage.json';
-import Web3 from 'web3';
-
-function App() {
-  const chains           = [goerli, polygonMumbai, scrollTestnet, optimism]
-  const projectId        = '5b90bbc69d8aceaccdf7dab68ee6ae91'
-  const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
-  const wagmiConfig = createConfig({
-    autoConnect: true,
-    connectors: w3mConnectors({ projectId, version: 1, chains }),
-    publicClient
-  })
-  const ethereumClient = new EthereumClient(wagmiConfig, chains)
-  const { account } = useAccount();
-
-  return (
-    <>
-      <WagmiConfig config={wagmiConfig}>
-        <Web3Button />
-        <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
-      </WagmiConfig>
-    </>
-  );
-}
-
-export default App;
-*/
