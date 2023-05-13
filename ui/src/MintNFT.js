@@ -1,5 +1,9 @@
 import * as React from 'react'
-import { usePrepareContractWrite } from 'wagmi'
+import {
+  usePrepareContractWrite,
+  useContractWrite,
+  useWaitForTransaction,
+} from 'wagmi'
  
 export function MintNFT() {
   const { config } = usePrepareContractWrite({
@@ -15,10 +19,25 @@ export function MintNFT() {
     ],
     functionName: 'mint',
   })
+  const { data, write } = useContractWrite(config)
+ 
+  const { isLoading, isSuccess } = useWaitForTransaction({
+    hash: data?.hash,
+  })
  
   return (
     <div>
-      <button>Mint</button>
+      <button disabled={!write || isLoading} onClick={() => write()}>
+        {isLoading ? 'Minting...' : 'Mint'}
+      </button>
+      {isSuccess && (
+        <div>
+          Successfully minted your NFT!
+          <div>
+            <a href={`https://etherscan.io/tx/${data?.hash}`}>Etherscan</a>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
