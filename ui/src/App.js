@@ -50,8 +50,7 @@ function App() {
 
 function Log({ logs }) {
   return (
-    <div style={{ marginTop: '20px', border: '1px solid #000', padding: '10px' }}>
-      <h3>Logs:</h3>
+    <div style={{ marginTop: '20px', border: '1px solid #000', padding: '10px', fontSize: '10pt',height: '100px', overflow: 'auto'}}>
       <ul>
         {logs.map((log, index) => (
           <li key={index}>{log}</li>
@@ -61,12 +60,13 @@ function Log({ logs }) {
   );
 }
 function Button({ onClick, children }) {
+
   const style = {
     padding: '10px 20px',
     margin: '10px',
-    fontSize: '14px',
+    fontSize: '16px',
     cursor: 'pointer',
-    borderRadius: '30px',
+    borderRadius: '12px',
     backgroundColor: '#E8673C',
     color: 'white',
     border: 'none'
@@ -176,8 +176,8 @@ function NFCComponent() {
   }, [addLog]);
 
   return (
-    <div style={{ textAlign: 'left', fontSize: '14pt' }}>
-      <div>NFC Reader</div>
+    <div style={{ textAlign: 'left', marginTop: '200px', border: '1px solid #000', padding: '10px' }}>
+      <div>NFC</div>
       <Button onClick={scanNFC}>Start NFC Scan</Button>
       <Button onClick={writeNFC}>Write to NFC</Button>
       <Log logs={logs} />
