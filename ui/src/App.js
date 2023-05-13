@@ -27,6 +27,7 @@ function WriteComponent() {
 */
 
 function Message() {
+  const key = "key:CVBNKFTYUHUHUIHUILHKULHULHUIbjkyukghyukVUKVYUKGBYHUIHIUl";
   const chainId                  = useChainId()
   const { data, isLoading, write } = useContractWrite({
     address: omoideArtifact.networks[chainId].address,
@@ -59,7 +60,7 @@ function Message() {
     if ('NDEFReader' in window) {
       const ndef = new NDEFReader();
       try {
-        await ndef.write({ records: [{ recordType: "text", data: "Hello NFC" }] });
+        await ndef.write({ records: [{ recordType: "text", data: key }] });
         //addLog("> Write completed");
       } catch (error) {
         //addLog(`Error: ${error}`);
