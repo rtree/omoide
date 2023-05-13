@@ -7,18 +7,54 @@ import React, { useCallback,useState,useEffect } from 'react';
 //import omoideArtifact from './OmoideStorage.json';
 import omoideArtifact from './OmoideStorage.json';
 import WebFont from 'webfontloader';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
+/*
 function WriteComponent() {
+  const chainId                  = useChainId()
+
   const { data, isLoading, write } = useContractWrite({
-    address: omoideArtifact.networks[5].address,
+    address: omoideArtifact.networks[chainId].address,
     abi: omoideArtifact.abi,
     functionName: "storeData",
-    args: ["test","test"]
+    args: ["testid","test"]
   })
 
   return (
     <button onClick={() => write()}>write data</button>
   )
+}
+*/
+
+function Message() {
+  const chainId                  = useChainId()
+  const { data, isLoading, write } = useContractWrite({
+    address: omoideArtifact.networks[chainId].address,
+    abi: omoideArtifact.abi,
+    functionName: "storeData",
+    onSuccess(data){
+      console.log(data);
+    }
+  })
+  const [message, setMessage] = useState(`Dear,
+
+  I am now typing in a garden of Lisboa. You are watching this because of my absence, right?
+  - - -
+  
+  Thanks,`);
+  const onClick = ()=>{
+    write({
+      args: ["testid",message]
+    }
+    );
+  };
+
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <InputField type="text" multiline={true} defaultValue={message} onChange={(e) => setMessage(e.target.value)} /> {/* Set defaultValue prop */}
+      <Button onClick={onClick}>Save this forever onchain.</Button>
+    </div>
+  );
 }
 
 function App() {
@@ -27,10 +63,10 @@ function App() {
   const chainId                  = useChainId()
 
   const { data } = useContractRead({
-    address: omoideArtifact.networks[5].address,
+    address: omoideArtifact.networks[chainId].address,
     abi: omoideArtifact.abi,
     functionName: "getData",
-    args: ["test"]
+    args: ["testid"]
   })
 
   console.log("here", address )
@@ -52,10 +88,8 @@ function App() {
 
   return (
     <div>
-      <WriteComponent/>
       <Web3Button  />
-      <Layout>
-      </Layout>
+      <Message />
       <NFCComponent> </NFCComponent>
     </div>
   );
@@ -123,22 +157,6 @@ function InputField({ label, multiline, ...rest }) {
       ) : (
         <input {...rest} />
       )}
-    </div>
-  );
-}
-
-function Layout() {
-  const defaultText = `Dear,
-
-  I am now typing in a garden of Lisboa. You are watching this because of my absence, right?
-  - - -
-  
-  Thanks,`;
-
-  return (
-    <div style={{ textAlign: 'center' }}>
-      <InputField type="text" multiline={true} defaultValue={defaultText} /> {/* Set defaultValue prop */}
-      <Button>Save this forever onchain.</Button>
     </div>
   );
 }
