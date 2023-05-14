@@ -15,6 +15,12 @@ module.exports = {
       gas: 4465030,
       //gasPrice: 10000000000,
     },
+    optimism: {
+      provider: () => new HDWalletProvider(MNEMONIC, `https://opt-mainnet.g.alchemy.com/v2/zA7CaIEZafNN_hS2broBUYvuMvb3ed5U`),
+      network_id: '10'
+      //gas: 4465030,
+      //gasPrice: 10000000000,
+    },
     mumbai: {
       provider: () => new HDWalletProvider(MNEMONIC, `https://rpc-mumbai.maticvigil.com`),
       network_id: 80001,

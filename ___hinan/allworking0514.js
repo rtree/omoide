@@ -11,7 +11,6 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { AES  } from 'crypto-js';
 import CryptoJS from 'crypto-js';
 import { BrowserRouter, Route, Router, Routes} from "react-router-dom";
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 var key;
 var uuid;
@@ -70,30 +69,28 @@ function MessageView() {
             console.log(`> Record type:  ${record.recordType}`);
             console.log(`> Record id:    ${record.id}`);
             console.log(`> Record data:  ${record.data}`);
-
-            if (record.recordType === 'text') {
-              let textDecoder = new TextDecoder(record.encoding);
-              privateKey = `${textDecoder.decode(record.data)}`;
+            if (record.recordType == "text") {
+              privateKey = record.data;
             }
-
           }
 
-          //Read from chain...<read itself is done upon MessageView loading
+          //Read from chain...
+          const encryptedMessage = ""          
+
           //Decript
-          const encryptedMessage = data;
 
           try {
             console.log(privateKey);
-            //uuid = "1234-5678-9012-3456";
-            console.log("pri :", privateKey);
+            key = privateKey;
+            uuid = "1234-5678-9012-3456";
+            console.log("pri :", key);
             console.log("uuid:", uuid);
 
-            decryptMessage(encryptedMessage, privateKey)
+            decryptMessage(encryptedMessage, key)
             .then(decryptedMessage => {
               console.log('Decrypted message:', decryptedMessage);
               // Use the decrypted message as needed
               setMessage(decryptedMessage);
-              setOpenDialog2(true);
             })
             .catch(error => {
               console.error('Decryption error:', error);
@@ -131,10 +128,9 @@ function MessageView() {
       </Dialog>
 
       <Dialog open={openDialog2} onClose={onCloseDialog2}>
-        <DialogTitle>Message revealed</DialogTitle>
+        <DialogTitle>Done!</DialogTitle>
         <DialogContent>
-          <DialogContentText></DialogContentText>
-          <ArrowDownwardIcon></ArrowDownwardIcon>
+          <DialogContentText>Your message has been stored.</DialogContentText>
         </DialogContent>
       </Dialog>
 
@@ -167,6 +163,7 @@ function WriteComponent() {
 }
 
 function Message() {
+  key = "CVBNKFTYUHUHUIHUILHKULHULHUIbjkyukghyukVUKVYUKGBYHUIHIUl";
   const chainId                    = useChainId()
   const { data, isLoading, write } = useContractWrite({
     address: omoideArtifact.networks[chainId].address,
@@ -178,7 +175,6 @@ function Message() {
       writeNFC();
     }
   })
-  const [privateKey, setPrivateKey] = useState("");
   const [openDialog , setOpenDialog]  = useState(false);
   const [openDialog2, setOpenDialog2] = useState(false);
   const [message, setMessage]         = useState(`Dear,
@@ -223,11 +219,11 @@ function Message() {
     try {
       const privateKey = await generatePrivateKey();
       console.log(privateKey);
-      setPrivateKey(privateKey);
+      key = privateKey;
       uuid = "1234-5678-9012-3456";
       console.log("pri :", key);
       console.log("uuid:", uuid);
-      const encryptedMessage = encryptMessage(message, privateKey);
+      const encryptedMessage = encryptMessage(message, key);
       //const encryptedMessage = "AIUEO-123"
       console.log('encryptedMessage', encryptedMessage);
       write({
@@ -235,7 +231,7 @@ function Message() {
       });
 
 
-      decryptMessage(encryptedMessage, privateKey)
+      decryptMessage(encryptedMessage, key)
       .then(decryptedMessage => {
         console.log('Decrypted message:', decryptedMessage);
         // Use the decrypted message as needed
@@ -256,8 +252,6 @@ function Message() {
       console.log("write initiated");
       const ndef = new NDEFReader();
       console.log("write object created");
-      console.log("uuid:" + uuid);
-      console.log("key :" + privateKey);
       try {
         const currentURL = window.location.href;
         const records = [
@@ -267,7 +261,7 @@ function Message() {
           },
           {
             recordType: "text",
-            data: `${privateKey}`,
+            data: key,
           },
         ];
         console.log(records);
@@ -369,7 +363,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/receiver*" element={<Receiver />} />
-          <Route path="*"          element={<Sender   />} />
+          <Route path="*"         element={<Sender   />} />
         </Routes>
       </BrowserRouter>
     </div>
