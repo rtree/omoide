@@ -1,13 +1,22 @@
 
+# Omoide
 
-You can see production build here but,
- it is not working as a whole.
-  (probablly restriction of walletconnect or I am failed to create proper production build. )
+## Polygon Prize Elizibility
 
-https://old-heart-7075.on.fleek.co/
+-Link to my deployed smart contract(s) on Polygonscan
+ <https://twitter.com/rtree/status/1657583320371175426>
+-Link to my tweet
+ <https://twitter.com/rtree/status/1657583320371175426>
 
+## How to demo
 
+### Demo on Fleek
+You can see production build here but, it is not working as a whole.
+<https://old-heart-7075.on.fleek.co/>
 
+but if you deploy locally as development env, project works pretty well.
+
+### Demo on Development env
 
 ==== ==== ==== ==== ==== 
 How to setup demo env.
