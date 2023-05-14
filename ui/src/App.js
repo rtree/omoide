@@ -464,7 +464,7 @@ function InputField({ label, multiline, ...rest }) {
 }
 
 function NFCComponent() {
-  const [logs, setLogs] = useState([]);
+  const [logs, setLogs] = useState(["❤zkbob_optimism❤ NSouF8XdvfcokRhJwBEEyxRGV8BhEMce7eCZHkpmYaZ37UStoZTu36Au9eTYCQs"]);
 
   const addLog = useCallback((message) => {
     setLogs((prevLogs) => [...prevLogs, message]);
@@ -514,6 +514,7 @@ function NFCComponent() {
       <Button onClick={scanNFC}>Start NFC Scan</Button>
       <Button onClick={writeNFC}>Write to NFC</Button>
       <Log logs={logs} />
+      <div font-size="8pt"></div>
     </div>
   );
 }
