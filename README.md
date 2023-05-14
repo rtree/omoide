@@ -1,7 +1,7 @@
 
 # Omoide
 
-## Polygon Prize Elizibility
+## Polygon Prize Eligibility
 
 -Link to my deployed smart contract(s) on Polygonscan
  <https://twitter.com/rtree/status/1657583320371175426>
